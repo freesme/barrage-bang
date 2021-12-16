@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="./styles.css" rel="stylesheet">
+    <title>弹幕!!!</title>
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="static/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="dists/css/barrager.css">
+    <link rel="stylesheet" type="text/css" href="static/pick-a-color/css/pick-a-color-1.2.3.min.css">
+    <link type="text/css" rel="stylesheet" href="static/syntaxhighlighter/styles/shCoreDefault.css"/>
+  </head>
+  <style>
+    .bule{
+      color: blue;
+      font-size: 20px;
+    }
+  </style>
+  <body style="background-color: rgba(0,255,255,0)" onload="webSocketConnection()">
+<!--    <h1 style="color: #3da0f8">一发入魂</h1>-->
+    我们加入了超赞的弹幕系统，赶快来上一发！
+    <div>
+<!--      <p>-->
+<!--        <button  class="bb-trigger btn btn-primary btn-lg  bb-light-blue"  onclick="run_example()"> 弹弹弹</button>-->
+<!--      </p>-->
+<!--      <p>-->
+<!--        <button  class="bb-trigger btn btn-primary btn-lg  bb-light-blue"  onclick="webSocketConnection()"> 链接Server</button>-->
+<!--      </p>-->
+    </div>
+    <!-- You can also require other files to run in this process -->
+    <script src="./renderer.js"></script>
+  </body>
+
+  <script type="text/javascript" src="static/js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="static/js/tinycolor-0.9.15.min.js"></script>
+  <script type="text/javascript" src="dists/js/jquery.barrager.min.js"></script>
+  <script type="text/javascript" src="static/syntaxhighlighter/scripts/shCore.js"></script>
+  <script type="text/javascript" src="static/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+  <script type="text/javascript" src="static/syntaxhighlighter/scripts/shBrushPhp.js"></script>
+  <script type="text/javascript" src="static/pick-a-color/js/pick-a-color-1.2.3.min.js"></script>
+  <script type="text/javascript">
+
+    var url = "ws://127.0.0.1:8080/websocket/message";
+    var ws = null;
+    function  run_example(){
+      var example_item={'img':'static/img/heisenberg.png','info':'Hello world! &#128513;','speed':10};
+      $('body').barrager(example_item);
+      return false;
+    }
+
+    function webSocketConnection(){
+      ws = new WebSocket(url)
+      ws.onopen = function () {
+        console.log("链接Server......")
+      }
+      ws.onmessage = function (evt){
+        var received_msg = evt.data;
+        console.log("数据已接收data...");
+        console.log(evt)
+        console.log("数据已接收..."+received_msg);
+        var example_item={'img':'static/img/heisenberg.png','info':received_msg,'speed':12};
+        $('body').barrager(example_item);
+      }
+
+      ws.onclose = function()
+      {
+        // 关闭 websocket
+        console.log("连接已关闭...");
+        //简单的断线重连
+        setTimeout(webSocketConnection,1000)
+
+        console.log("尝试重新连接...");
+      };
+    }
+
+  </script>
+
+
+</html>
+
